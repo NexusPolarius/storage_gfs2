@@ -1,0 +1,41 @@
+---
+
+- name: prepare nodes
+  hosts: nodes
+  become: true
+  
+  roles:
+    - { role: node_config, tags: [node config] }
+    - { role: pmk_install, tags: [install pcs pacemaker corosync] }
+    - { role: fence_agents, tags: [build fance agent] }
+    - { role: open_iscsi, tags: [install and config iscsi on nodes] }
+    - { role: clvm_gfs2, tags: [install clvm and gfs2-utils on nodes] }
+
+
+- name: configure target
+  hosts: storage
+  become: true
+  
+  roles:
+    - { role: target, tags: [configure target] }
+
+    
+- name: connect to target
+  hosts: nodes
+  become: true
+  
+  roles:
+    - { role: connect_targ, tags: [connect nodes to target] }
+
+
+- name: create pmk cluster and gfs2 FS
+  hosts: node1
+  become: true
+
+  roles:
+    - { role: pmk_create_cls, tags: [create cluster] }
+    - { role: fence_resource, tags: [add fence resource] }
+    - { role: dlm_clvm_resource, tags: [add dlm clvm resource] }
+    - { role: gfs2_create_fs, tags: [create gfs2 FS] }
+    
+...

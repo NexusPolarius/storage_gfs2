@@ -1,0 +1,34 @@
+---
+    
+- name: install open-iscsi
+  yum:
+    name:
+      #- open-iscsi
+      -  iscsi-initiator-utils
+    state: latest   
+
+- name: start iscsi.service
+  systemd:
+    name: iscsi
+    state: started
+    enabled: yes
+    
+- name: copy initiatorname file for node1
+  template: src=templates/{{ initiatorname_tml_1 }} dest={{ initiatorname_file }}
+  when: inventory_hostname == "node1"
+  
+- name: copy initiatorname file for node2
+  template: src=templates/{{ initiatorname_tml_2 }} dest={{ initiatorname_file }}
+  when: inventory_hostname == "node2"
+  
+- name: copy initiatorname file for node3
+  template: src=templates/{{ initiatorname_tml_3 }} dest={{ initiatorname_file }}
+  when: inventory_hostname == "node3"
+  
+- name: restart iscsid
+  systemd:
+    name: iscsid
+    state: restarted
+    
+    
+...

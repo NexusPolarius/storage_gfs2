@@ -1,0 +1,10 @@
+---
+
+- name: create cluster
+  shell: |
+    pcs cluster auth {{ hosts.h1 }} {{ hosts.h2 }} {{ hosts.h3 }} -u hacluster -p {{ PASS_HACLUSTER }}
+    pcs cluster setup --force --name gfs2_cluster {{ hosts.h1 }} {{ hosts.h2 }} {{ hosts.h3 }}
+    pcs cluster start --all
+    pcs cluster enable --all
+    pcs property set no-quorum-policy={{ no_quorum_policy }}
+    pcs property set stonith-enabled={{ stonith_enabled }}

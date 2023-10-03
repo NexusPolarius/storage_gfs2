@@ -1,0 +1,8 @@
+---
+
+- name: add dlm clvm resource
+  ansible.builtin.command: "{{ item }}"
+  with_items:
+    - "pcs resource create dlm systemd:dlm op monitor interval=30s on-fail=ignore clone interleave=true ordered=true"
+    - "pcs resource create clvmd ocf:heartbeat:clvm op monitor interval=30s on-fail=ignore clone interleave=true ordered=true"
+    - "pcs constraint order start dlm-clone then clvmd-clone"

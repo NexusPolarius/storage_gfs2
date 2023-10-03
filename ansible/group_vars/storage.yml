@@ -1,0 +1,5 @@
+---
+
+initiatorname_node1: iqn.2023-09.org.debian:01:node1 #iqn должен быть такой же как в шаблоне 'initiatorname.iscsi_1.j2'
+initiatorname_node2: iqn.2023-09.org.debian:01:node2 #iqn должен быть такой же как в шаблоне 'initiatorname.iscsi_2.j2'
+initiatorname_node3: iqn.2023-09.org.debian:01:node3 #iqn должен быть такой же как в шаблоне 'initiatorname.iscsi_3.j2'

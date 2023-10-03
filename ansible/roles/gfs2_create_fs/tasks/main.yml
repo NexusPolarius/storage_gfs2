@@ -1,0 +1,12 @@
+---
+
+- name: create gfs2 FS
+  ansible.builtin.command: "{{ item }}"
+  with_items:
+    - "pvcreate /dev/sdb"
+    - "vgcreate cluster_vg /dev/sdb"
+    - "lvcreate -n cluster_lv -l 100%FREE cluster_vg"
+    - "mkfs.gfs2 -j 3 -p lock_dlm -t gfs2_cluster:gfs2 /dev/cluster_vg/cluster_lv"
+    - 'pcs resource create clusterfs Filesystem device="/dev/cluster_vg/cluster_lv" directory="/mnt/gfs2" fstype="gfs2" "options=noatime" op monitor interval=10s on-fail=ignore clone interleave=true'
+    - "pcs constraint order start clvmd-clone then clusterfs-clone"
+    - "pcs constraint colocation add clusterfs-clone with clvmd-clone"

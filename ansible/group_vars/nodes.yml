@@ -1,0 +1,28 @@
+---
+hosts:
+   h1: node1
+   h2: node2
+   h3: node3
+
+ip:
+  node1: 192.168.56.10
+  node2: 192.168.56.11
+  node3: 192.168.56.12
+  target: 192.168.56.13
+  
+hosts_tml: 'hosts.j2'
+hosts_file: /etc/hosts
+
+initiatorname_tml_1: 'initiatorname.iscsi_1.j2'
+initiatorname_tml_2: 'initiatorname.iscsi_2.j2'
+initiatorname_tml_3: 'initiatorname.iscsi_3.j2'
+initiatorname_file: /etc/iscsi/initiatorname.iscsi
+
+PASS_HACLUSTER: 'hacluster'
+
+no_quorum_policy: stop
+stonith_enabled: true
+
+virtualbox_host: 192.168.56.1
+virtualbox_host_username: sav
+virtualbox_host_password: autoplay

@@ -1,0 +1,21 @@
+---
+
+- name: Check for replay (/opt/pcs_fence_config_done exists)
+  ansible.builtin.stat:
+    path: /opt/pcs_fence_config_done
+  register: pcs_fence_config_done
+
+- name: Configure fencing on Virtualbox
+  ansible.builtin.command: "{{ item }}"
+  with_items:
+    - "pcs stonith create fence1 fence_vbox ipaddr=\"{{ virtualbox_host }}\" login=\"{{ virtualbox_host_username }}\" passwd=\"{{ virtualbox_host_password }}\" power_wait=\"10\" secure=\"1\" port=\"{{ hosts.h1 }}\" pcmk_host_list=\"{{ hosts.h1 }}\""
+    - "pcs stonith create fence2 fence_vbox ipaddr=\"{{ virtualbox_host }}\" login=\"{{ virtualbox_host_username }}\" passwd=\"{{ virtualbox_host_password }}\" power_wait=\"10\" secure=\"1\" port=\"{{ hosts.h2 }}\" pcmk_host_list=\"{{ hosts.h2 }}\""
+    - "pcs stonith create fence3 fence_vbox ipaddr=\"{{ virtualbox_host }}\" login=\"{{ virtualbox_host_username }}\" passwd=\"{{ virtualbox_host_password }}\" power_wait=\"10\" secure=\"1\" port=\"{{ hosts.h3 }}\" pcmk_host_list=\"{{ hosts.h3 }}\""
+    - "pcs constraint location fence1 avoids {{ hosts.h1 }}"
+    - "pcs constraint location fence2 avoids {{ hosts.h2 }}"
+    - "pcs constraint location fence3 avoids {{ hosts.h3 }}"
+  when: (ansible_virtualization_type == "virtualbox" and pcs_fence_config_done.stat.exists != True)
+  no_log: true
+  
+
+...

@@ -1,0 +1,30 @@
+---
+
+- name: Install epel-release
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - epel-release
+
+- name: apt-get update
+  yum:
+    update_cache: yes
+    
+- name: install targetcli
+  yum:
+    name:
+#      - targetcli-fb
+      - targetcli
+    state: latest 
+    
+- name: configure target
+  ansible.builtin.command: "{{ item }}"
+  with_items:
+    - "targetcli /backstores/block create disk01 /dev/sdb"
+    - "targetcli /iscsi create iqn.2023-09.otus:storage.target00"
+    - "targetcli /iscsi/iqn.2023-09.otus:storage.target00/tpg1/luns create /backstores/block/disk01 lun=1"  
+    - "targetcli /iscsi/iqn.2023-09.otus:storage.target00/tpg1/acls create {{ initiatorname_node1 }}"
+    - "targetcli /iscsi/iqn.2023-09.otus:storage.target00/tpg1/acls create {{ initiatorname_node2 }}"
+    - "targetcli /iscsi/iqn.2023-09.otus:storage.target00/tpg1/acls create {{ initiatorname_node3 }}" 
